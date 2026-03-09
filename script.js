@@ -140,9 +140,10 @@ function initGallery() {
         magnifier.style.display = "block";
         magnifier.style.backgroundImage = `url('${modalImage.src}')`;
         
-        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-        updateMagnifier(clientX, clientY);
+        const isTouch = e.type.includes('touch');
+        const clientX = isTouch ? e.touches[0].clientX : e.clientX;
+        const clientY = isTouch ? e.touches[0].clientY : e.clientY;
+        updateMagnifier(clientX, clientY, isTouch);
     };
 
     modalImage.addEventListener("mousedown", startZoom);
@@ -153,9 +154,10 @@ function initGallery() {
         if (!isZooming) return;
         e.preventDefault(); // Prevents scrolling while zooming
         
-        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-        updateMagnifier(clientX, clientY);
+        const isTouch = e.type.includes('touch');
+        const clientX = isTouch ? e.touches[0].clientX : e.clientX;
+        const clientY = isTouch ? e.touches[0].clientY : e.clientY;
+        updateMagnifier(clientX, clientY, isTouch);
     };
 
     modalImage.addEventListener("mousemove", moveZoom);
@@ -174,7 +176,7 @@ function initGallery() {
     // 4. Mouse Leave (Dragging off the image)
     modalImage.addEventListener("mouseleave", endZoom);
 
-    function updateMagnifier(clientX, clientY) {
+    function updateMagnifier(clientX, clientY, isTouch) {
         // Get the exact rendered size and position of the image on the screen
         const rect = modalImage.getBoundingClientRect();
 
@@ -196,9 +198,11 @@ function initGallery() {
         const bgPosY = magHalfHeight - (y * zoomLevel);
         magnifier.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
 
-        // Move the physical magnifier glass element to follow the cursor
+        // Move the physical magnifier glass element out from under the thumb on mobile
+        const touchOffsetY = isTouch ? 120 : 0; // Shift it up by 120px for touch
+
         magnifier.style.left = `${x - magHalfWidth}px`;
-        magnifier.style.top = `${y - magHalfHeight}px`;
+        magnifier.style.top = `${y - magHalfHeight - touchOffsetY}px`;
     }
     // --- End Magnifying Glass Setup ---
 

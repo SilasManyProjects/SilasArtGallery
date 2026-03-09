@@ -437,7 +437,8 @@ p {
 
 /* Magnifying Glass Feature */
 .modal-content {
-    cursor: crosshair;
+    /* Base64 encoded custom 16x16 crosshair (browser default is usually 24x24 or 32x32) */
+    cursor: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0v16M0 8h16" stroke="white" stroke-width="1.5"/><path d="M8 1v14M1 8h14" stroke="black" stroke-width="1"/></svg>') 8 8, crosshair !important;
 }
 
 .magnifier {

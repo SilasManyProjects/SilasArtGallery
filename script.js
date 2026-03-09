@@ -1,191 +1,184 @@
-const modal = document.getElementById("imageModal");
-const modalImage = document.getElementById("modalImage");
-const modalDescription = document.getElementById("modalDescription");
-const closeBtn = document.querySelector(".close");
-const musicBtn = document.getElementById("musicBtn");
-const prevBtn = document.querySelector(".prev");
-const nextBtn = document.querySelector(".next");
-let currentIndex = 0;
+/* =========================================
+   1. MUSIC SYSTEM
+========================================= */
+function initMusic() {
+    const musicBtn = document.getElementById("musicBtn");
+    if (!musicBtn) return; // Stop if the button doesn't exist on the page
 
-/* Music System (Playlist) */
-const playlist = ["music.mp3", "music2.mp3"];
-let currentTrackIndex = 0;
-const audio = new Audio(playlist[0]);
-audio.volume = 0.5;
-let isPlaying = false;
+    const playlist = ["music.mp3", "music2.mp3"];
+    let currentTrackIndex = 0;
+    const audio = new Audio(playlist[0]);
+    audio.volume = 0.5;
+    let isPlaying = false;
 
-// When track ends, play next
-audio.addEventListener('ended', function () {
-    currentTrackIndex++;
-    if (currentTrackIndex >= playlist.length) {
-        currentTrackIndex = 0; // Loop back to start
+    function updateMusicUI() {
+        if (isPlaying) {
+            musicBtn.innerHTML = "❚❚ Pause Music";
+            musicBtn.style.background = "#5e008a";
+        } else {
+            musicBtn.innerHTML = "► Play Music";
+            musicBtn.style.background = "linear-gradient(to right, #380052, #1f003b)";
+        }
     }
-    audio.src = playlist[currentTrackIndex];
-    audio.play().then(() => {
-        isPlaying = true;
-        updateMusicUI();
-    }).catch(e => console.log("Auto-advance blocked:", e));
-});
 
-function updateMusicUI() {
-    if (isPlaying) {
-        musicBtn.innerHTML = "❚❚ Pause Music";
-        musicBtn.style.background = "#5e008a";
-    } else {
-        musicBtn.innerHTML = "► Play Music";
-        musicBtn.style.background = "linear-gradient(to right, #380052, #1f003b)";
-    }
-}
+    // Auto-advance to next track
+    audio.addEventListener('ended', () => {
+        currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+        audio.src = playlist[currentTrackIndex];
+        audio.play().then(() => {
+            isPlaying = true;
+            updateMusicUI();
+        }).catch(e => console.log("Auto-advance blocked:", e));
+    });
 
-function toggleMusic() {
-    if (isPlaying) {
-        audio.pause();
-        isPlaying = false;
-    } else {
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
+    musicBtn.addEventListener('click', () => {
+        if (isPlaying) {
+            audio.pause();
+            isPlaying = false;
+        } else {
+            audio.play().then(() => {
                 isPlaying = true;
-                updateMusicUI();
             }).catch(() => {
                 isPlaying = false;
             });
         }
-    }
-    updateMusicUI();
-}
+        updateMusicUI();
+    });
 
-musicBtn.onclick = toggleMusic;
-
-function tryAutoplay() {
-    // Attempt to start sequence
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-        playPromise.then(() => {
+    // Attempt Autoplay on first user interaction anywhere
+    const tryAutoplay = () => {
+        audio.play().then(() => {
             isPlaying = true;
             updateMusicUI();
             document.removeEventListener('click', tryAutoplay);
         }).catch(() => { });
-    }
-}
-
-document.addEventListener('click', tryAutoplay);
-
-/* Gallery & Modal */
-function closeModal() {
-    modal.style.display = "none";
-}
-
-closeBtn.onclick = closeModal;
-
-modal.onclick = function (e) {
-    if (e.target === modal) {
-        closeModal();
-    }
-};
-
-document.addEventListener("contextmenu", (e) => e.preventDefault());
-
-const galleryImages = document.querySelectorAll(".gallery img");
-const galleryImagesArray = Array.from(galleryImages);
-
-galleryImages.forEach((img, index) => {
-    img.onclick = function () {
-        currentIndex = index;
-        openModal();
     };
-});
-
-function openModal() {
-    modal.style.display = "flex";
-    updateModalImage();
+    document.addEventListener('click', tryAutoplay);
 }
 
-function updateModalImage() {
-    // Loop navigation
-    if (currentIndex >= galleryImagesArray.length) {
-        currentIndex = 0;
-    } else if (currentIndex < 0) {
-        currentIndex = galleryImagesArray.length - 1;
+/* =========================================
+   2. GALLERY & MODAL SYSTEM
+========================================= */
+function initGallery() {
+    const modal = document.getElementById("imageModal");
+    const modalImage = document.getElementById("modalImage");
+    const modalDescription = document.getElementById("modalDescription");
+    const closeBtn = document.querySelector(".close");
+    const prevBtn = document.querySelector(".prev");
+    const nextBtn = document.querySelector(".next");
+    const galleryImagesArray = Array.from(document.querySelectorAll(".gallery img"));
+
+    // Stop if gallery or modal elements are missing
+    if (!modal || galleryImagesArray.length === 0) return;
+
+    let currentIndex = 0;
+
+    function closeModal() {
+        modal.style.display = "none";
     }
 
-    const img = galleryImagesArray[currentIndex];
-    modalImage.src = img.src;
-    modalDescription.innerHTML = img.title;
+    function openModal() {
+        modal.style.display = "flex";
+        updateModalImage();
+    }
 
-    // Reset animation
-    modalImage.style.animation = "none";
-    modalImage.offsetHeight; /* trigger reflow */
-    modalImage.style.animation = "zoomIn 0.3s ease";
-}
+    function updateModalImage() {
+        if (currentIndex >= galleryImagesArray.length) currentIndex = 0;
+        if (currentIndex < 0) currentIndex = galleryImagesArray.length - 1;
 
-// Navigation buttons
-prevBtn.onclick = function () {
-    currentIndex--;
-    updateModalImage();
-}
+        const img = galleryImagesArray[currentIndex];
+        if (modalImage && modalDescription) {
+            modalImage.src = img.src;
+            modalDescription.innerHTML = img.title || "Image";
 
-nextBtn.onclick = function () {
-    currentIndex++;
-    updateModalImage();
-}
-
-// Keyboard navigation
-document.addEventListener('keydown', function (e) {
-    if (modal.style.display === "flex") {
-        if (e.key === "ArrowLeft") {
-            currentIndex--;
-            updateModalImage();
-        } else if (e.key === "ArrowRight") {
-            currentIndex++;
-            updateModalImage();
-        } else if (e.key === "Escape") {
-            closeModal();
+            // Reset animation
+            modalImage.style.animation = "none";
+            modalImage.offsetHeight; /* trigger reflow */
+            modalImage.style.animation = "zoomIn 0.3s ease";
         }
     }
-});
 
-/* Weather */
-const weatherCodes = {
-    0: "Clear Sky", 1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast",
-    45: "Fog", 48: "Fog", 51: "Drizzle", 53: "Drizzle", 55: "Drizzle",
-    61: "Rain", 63: "Rain", 65: "Rain", 80: "Rain Showers", 81: "Rain Showers", 82: "Rain Showers",
-    71: "Snow", 73: "Snow", 75: "Snow", 95: "Thunderstorm", 96: "Thunderstorm", 99: "Thunderstorm"
-};
+    // Event Listeners (using Optional Chaining '?' just in case buttons are missing)
+    closeBtn?.addEventListener('click', closeModal);
+    prevBtn?.addEventListener('click', () => { currentIndex--; updateModalImage(); });
+    nextBtn?.addEventListener('click', () => { currentIndex++; updateModalImage(); });
 
-const weatherIcons = {
-    0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
-    45: "🌫️", 48: "🌫️", 51: "🌦️", 53: "🌦️", 55: "🌦️",
-    61: "🌧️", 63: "🌧️", 65: "🌧️", 80: "🌧️", 81: "🌧️", 82: "🌧️",
-    71: "🌨️", 73: "🌨️", 75: "🌨️", 95: "⚡", 96: "⚡", 99: "⚡"
-};
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
 
-async function updateCityWeather(lat, lon, suffix) {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&temperature_unit=fahrenheit`;
+    galleryImagesArray.forEach((img, index) => {
+        img.addEventListener('click', () => {
+            currentIndex = index;
+            openModal();
+        });
+    });
 
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (data.current_weather) {
-            const { temperature, weathercode } = data.current_weather;
-
-            const tempEl = document.getElementById(`temp-${suffix}`);
-            const descEl = document.getElementById(`desc-${suffix}`);
-            const iconEl = document.getElementById(`icon-${suffix}`);
-
-            if (tempEl) tempEl.textContent = `${Math.round(temperature)}°F`;
-            if (descEl) descEl.textContent = weatherCodes[weathercode] || "Unknown";
-            if (iconEl) iconEl.textContent = weatherIcons[weathercode] || "🌡️";
+    document.addEventListener('keydown', (e) => {
+        if (modal.style.display === "flex") {
+            if (e.key === "ArrowLeft") { currentIndex--; updateModalImage(); }
+            if (e.key === "ArrowRight") { currentIndex++; updateModalImage(); }
+            if (e.key === "Escape") closeModal();
         }
-    } catch (e) {
-        console.error("Weather error:", e);
-    }
+    });
+
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 
+/* =========================================
+   3. WEATHER SYSTEM
+========================================= */
 function initWeather() {
-    updateCityWeather(30.33, -81.66, "jax");       // Jacksonville
-    updateCityWeather(38.81, -91.14, "warren");    // Warrenton
+    const weatherCodes = {
+        0: "Clear Sky", 1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast",
+        45: "Fog", 48: "Fog", 51: "Drizzle", 53: "Drizzle", 55: "Drizzle",
+        61: "Rain", 63: "Rain", 65: "Rain", 80: "Rain Showers", 81: "Rain Showers", 82: "Rain Showers",
+        71: "Snow", 73: "Snow", 75: "Snow", 95: "Thunderstorm", 96: "Thunderstorm", 99: "Thunderstorm"
+    };
+
+    const weatherIcons = {
+        0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
+        45: "🌫️", 48: "🌫️", 51: "🌦️", 53: "🌦️", 55: "🌦️",
+        61: "🌧️", 63: "🌧️", 65: "🌧️", 80: "🌧️", 81: "🌧️", 82: "🌧️",
+        71: "🌨️", 73: "🌨️", 75: "🌨️", 95: "⚡", 96: "⚡", 99: "⚡"
+    };
+
+    async function fetchWeather(lat, lon, suffix) {
+        // Updated to Open-Meteo's modern 'current' parameter syntax
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&temperature_unit=fahrenheit`;
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("API Network Error");
+            const data = await response.json();
+
+            if (data.current) {
+                const temp = Math.round(data.current.temperature_2m);
+                const code = data.current.weather_code;
+
+                const tempEl = document.getElementById(`temp-${suffix}`);
+                const descEl = document.getElementById(`desc-${suffix}`);
+                const iconEl = document.getElementById(`icon-${suffix}`);
+
+                if (tempEl) tempEl.textContent = `${temp}°F`;
+                if (descEl) descEl.textContent = weatherCodes[code] || "Unknown";
+                if (iconEl) iconEl.textContent = weatherIcons[code] || "🌡️";
+            }
+        } catch (e) {
+            console.error(`Weather failed for ${suffix}:`, e);
+        }
+    }
+
+    // Coordinates for Jacksonville and Warrenton
+    fetchWeather(30.33, -81.66, "jax");
+    fetchWeather(38.81, -91.14, "warren");
 }
 
-window.addEventListener('load', initWeather);
+/* =========================================
+   4. INITIALIZE EVERYTHING ON LOAD
+========================================= */
+document.addEventListener('DOMContentLoaded', () => {
+    initMusic();
+    initGallery();
+    initWeather();
+});

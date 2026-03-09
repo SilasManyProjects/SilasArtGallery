@@ -1,26 +1,37 @@
-<!doctypehtml>
-    <html lang=en>
-    <meta charset=UTF-8>
-    <meta content="width=device-width,initial-scale=1" name=viewport>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Silas' Arts</title>
-    <link href="style.css?v=7" rel=stylesheet>
+    <link href="style.css?v=7" rel="stylesheet">
     <script src="script.js?v=7" defer></script>
-    <div class=sidebar>
-        <h3>Ambience</h3><button class=music-btn id=musicBtn>► Play Music</button><br>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <h3>Ambience</h3>
+        <button class="music-btn" id="musicBtn">► Play Music</button><br>
+
         <h2>About Me:</h2>
-        <p>I am a 22 year old <em>artist</em> who enjoys <strong>painting</strong> and <strong>drawing</strong>.
-            <br>I have been doing art for over <br><strong>10 years</strong> and have developed my own unique style.
-            <br>While I'm not where I want to be yet, I hope you enjoy my work.
-        <h3>Comission Info:</h3>
-        <p><strong>I am currently not taking comissions.</strong>
-        <p><strong>But if you would like a print of my art, please contact me.</strong>
+        <p>I am a 22 year old <em>artist</em> who enjoys <strong>painting</strong> and <strong>drawing</strong>.<br>
+            I have been doing art for over <br><strong>10 years</strong> and have developed my own unique style.<br>
+            While I'm not where I want to be yet, I hope you enjoy my work.</p>
+
+        <h3>Commission Info:</h3>
+        <p><strong>I am currently not taking commissions.</strong></p>
+        <p><strong>But if you would like a print of my art, please contact me.</strong></p>
+
         <h3>Contact Me At:</h3>
-        <p><strong>Email: silasartcreations@gmail.com</strong>
-        <p><strong>Discord: <br>.speakeazy <br><em>(Dont forget the dot!)</em></strong>
-    </div>
-    <div class=main-content>
+        <p><strong>Email: silasartcreations@gmail.com</strong></p>
+        <p><strong>Discord: <br>.speakeazy <br><em>(Don't forget the dot!)</em></strong></p>
+    </aside>
+
+    <main class="main-content">
+
         <div id="weatherWidget" class="weather-widget">
-            <!-- JAX -->
             <div class="weather-city" id="city-jax">
                 <div class="weather-main">
                     <span class="weather-temp" id="temp-jax">--°F</span>
@@ -34,7 +45,6 @@
 
             <div class="weather-divider"></div>
 
-            <!-- Warrenton -->
             <div class="weather-city" id="city-warren">
                 <div class="weather-main">
                     <span class="weather-temp" id="temp-warren">--°F</span>
@@ -46,50 +56,64 @@
                 </div>
             </div>
         </div>
-        <div class=header>
+
+        <div class="header">
             <h1>Silas' Arts</h1>
         </div>
-        <p>Welcome to my art gallery. I hope you enjoy my work.
-        <div class=gallery>
-            <div class="art-wrapper"><img alt="Smokey The Dog Portrait" title="Smokey The Dog (RIP)" loading=lazy
-                    src=smokeydog.webp></div>
-            <div class="art-wrapper"><img alt=Smokycat title="Smoky the Cat (RIP)" loading=lazy src=Smokycat.webp></div>
-            <div class="art-wrapper"><img alt="Luna The Dog" title="Luna The Dog (RIP)" loading=lazy src=LunaDog.webp>
+
+        <p>Welcome to my art gallery. I hope you enjoy my work.</p>
+
+        <section class="gallery">
+            <div class="art-wrapper"><img alt="Smokey The Dog Portrait" title="Smokey The Dog (RIP)" loading="lazy"
+                    src="smokeydog.webp"></div>
+            <div class="art-wrapper"><img alt="Smokycat" title="Smoky the Cat (RIP)" loading="lazy" src="Smokycat.webp">
             </div>
-            <div class="art-wrapper"><img alt=Lucy title="Lucy the Dog" loading=lazy src=Lucy.webp></div>
-            <div class="art-wrapper"><img alt="Lucy2" title="Lucy the Dog (Stylized)" loading=lazy
-                    src=LucyStylized.webp></div>
-            <div class="art-wrapper"><img alt="Daisy" title="Daisy the Dog (RIP)" loading=lazy src=Daisy.webp></div>
-            <div class="art-wrapper"><img alt="Daisy2" title="Daisy the Dog (RIP)" loading=lazy src=daisy2.webp></div>
-            <div class="art-wrapper"><img alt=3pet title="Three of a kind" loading=lazy src=3pet.webp></div>
-            <div class="art-wrapper"><img alt="CocoLab" title="Coco the Labrador" loading=lazy src=CocoLab.webp></div>
-            <div class="art-wrapper"><img alt="UnknownDog" title="Unknown Dog" loading=lazy src=UnknownDog.webp></div>
-            <div class="art-wrapper"><img alt=3orb title=Refraction loading=lazy src=3orb.webp></div>
-            <div class="art-wrapper"><img alt=Spring title=Remember. loading=lazy src=Spring.webp></div>
-            <div class="art-wrapper"><img alt=WonderingWhy title="Wondering Why" loading=lazy src=WonderingWhy.webp>
+            <div class="art-wrapper"><img alt="Luna The Dog" title="Luna The Dog (RIP)" loading="lazy"
+                    src="LunaDog.webp"></div>
+            <div class="art-wrapper"><img alt="Lucy" title="Lucy the Dog" loading="lazy" src="Lucy.webp"></div>
+            <div class="art-wrapper"><img alt="Lucy2" title="Lucy the Dog (Stylized)" loading="lazy"
+                    src="LucyStylized.webp"></div>
+            <div class="art-wrapper"><img alt="Daisy" title="Daisy the Dog (RIP)" loading="lazy" src="Daisy.webp"></div>
+            <div class="art-wrapper"><img alt="Daisy2" title="Daisy the Dog (RIP)" loading="lazy" src="daisy2.webp">
             </div>
-            <div class="art-wrapper"><img alt=Window title="Stuck Inside" loading=lazy src=Window.webp></div>
-            <div class="art-wrapper"><img alt=Stranded title="Stranded" loading=lazy src=StrandedInIce.webp></div>
-            <div class="art-wrapper"><img alt=DontLookBack title="Don't Look Back" loading=lazy src=DontLookBack.webp>
+            <div class="art-wrapper"><img alt="3pet" title="Three of a kind" loading="lazy" src="3pet.webp"></div>
+            <div class="art-wrapper"><img alt="CocoLab" title="Coco the Labrador" loading="lazy" src="CocoLab.webp">
             </div>
-            <div class="art-wrapper"><img alt=LightingStudy title="Lighting Study" loading=lazy src=LightingStudy.webp>
+            <div class="art-wrapper"><img alt="UnknownDog" title="Unknown Dog" loading="lazy" src="UnknownDog.webp">
             </div>
-            <div class="art-wrapper"><img alt=CannotUnsee title="What I Cannot Unsee" loading=lazy src=CannotUnsee.webp>
-            </div>
-            <div class="art-wrapper"><img alt=Greed title=Greed loading=lazy src=Greed.webp></div>
-            <div class="art-wrapper"><img alt=LetTheWaterFall title="Let The Water Fall" loading=lazy
-                    src=LetTheWaterFall.webp></div>
-            <div class="art-wrapper"><img alt=IDontUnderstand title="I Don't Understand" loading=lazy
-                    src=IDontUnderstand.webp></div>
-            <div class="art-wrapper"><img alt=LeopardSharkAnthro title="Grin of the Leopard Shark" loading=lazy
-                    src=LeopardShark.webp></div>
-        </div>
-    </div>
-    <div class=modal id=imageModal>
-        <span class=close>×</span>
+            <div class="art-wrapper"><img alt="3orb" title="Refraction" loading="lazy" src="3orb.webp"></div>
+            <div class="art-wrapper"><img alt="Spring" title="Remember." loading="lazy" src="Spring.webp"></div>
+            <div class="art-wrapper"><img alt="WonderingWhy" title="Wondering Why" loading="lazy"
+                    src="WonderingWhy.webp"></div>
+            <div class="art-wrapper"><img alt="Window" title="Stuck Inside" loading="lazy" src="Window.webp"></div>
+            <div class="art-wrapper"><img alt="Stranded" title="Stranded" loading="lazy" src="StrandedInIce.webp"></div>
+            <div class="art-wrapper"><img alt="DontLookBack" title="Don't Look Back" loading="lazy"
+                    src="DontLookBack.webp"></div>
+            <div class="art-wrapper"><img alt="LightingStudy" title="Lighting Study" loading="lazy"
+                    src="LightingStudy.webp"></div>
+            <div class="art-wrapper"><img alt="CannotUnsee" title="What I Cannot Unsee" loading="lazy"
+                    src="CannotUnsee.webp"></div>
+            <div class="art-wrapper"><img alt="Greed" title="Greed" loading="lazy" src="Greed.webp"></div>
+            <div class="art-wrapper"><img alt="LetTheWaterFall" title="Let The Water Fall" loading="lazy"
+                    src="LetTheWaterFall.webp"></div>
+            <div class="art-wrapper"><img alt="IDontUnderstand" title="I Don't Understand" loading="lazy"
+                    src="IDontUnderstand.webp"></div>
+            <div class="art-wrapper"><img alt="LeopardSharkAnthro" title="Grin of the Leopard Shark" loading="lazy"
+                    src="LeopardShark.webp"></div>
+        </section>
+
+    </main>
+
+    <div class="modal" id="imageModal">
+        <span class="close">×</span>
         <a class="prev">&#10094;</a>
-        <div class=modal-wrapper><img alt="Modal Image" title="Modal Image" class=modal-content id=modalImage></div>
+        <div class="modal-wrapper">
+            <img alt="Modal Image" title="Modal Image" class="modal-content" id="modalImage">
+        </div>
         <a class="next">&#10095;</a>
-        <p id=modalDescription>
+        <p id="modalDescription"></p>
     </div>
-    </div>
+
+</body>
+
+</html>

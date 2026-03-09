@@ -178,9 +178,9 @@ function initGallery() {
         const magHalfHeight = magnifier.offsetHeight / 2;
 
         // Shift the background position so the exact point clicked is in the dead-center of the circle
-        const bgPosX = (x * zoomLevel) - magHalfWidth;
-        const bgPosY = (y * zoomLevel) - magHalfHeight;
-        magnifier.style.backgroundPosition = `-${bgPosX}px -${bgPosY}px`;
+        const bgPosX = magHalfWidth - (x * zoomLevel);
+        const bgPosY = magHalfHeight - (y * zoomLevel);
+        magnifier.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
 
         // Move the physical magnifier glass element to follow the cursor
         magnifier.style.left = `${x - magHalfWidth}px`;

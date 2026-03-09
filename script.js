@@ -131,42 +131,56 @@ function initGallery() {
     let isZooming = false;
     const zoomLevel = 2.5; // Adjust this number to make the zoom stronger or weaker
 
-    // 1. Mouse Down (Left Click)
-    modalImage.addEventListener("mousedown", (e) => {
-        e.preventDefault(); // Prevents the browser from trying to "drag" the image file
-        if (e.button !== 0) return; // Only trigger if it's the left mouse button
+    // 1. Start Zoom (Mouse Down & Touch Start)
+    const startZoom = (e) => {
+        e.preventDefault(); // Prevents "dragging" the image or default mobile actions
+        if (e.type === 'mousedown' && e.button !== 0) return; // Only left-click
 
         isZooming = true;
         magnifier.style.display = "block";
         magnifier.style.backgroundImage = `url('${modalImage.src}')`;
-        updateMagnifier(e);
-    });
+        
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        updateMagnifier(clientX, clientY);
+    };
 
-    // 2. Mouse Move (Dragging the glass)
-    modalImage.addEventListener("mousemove", (e) => {
+    modalImage.addEventListener("mousedown", startZoom);
+    modalImage.addEventListener("touchstart", startZoom, { passive: false });
+
+    // 2. Move Zoom (Mouse Move & Touch Move)
+    const moveZoom = (e) => {
         if (!isZooming) return;
-        updateMagnifier(e);
-    });
+        e.preventDefault(); // Prevents scrolling while zooming
+        
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        updateMagnifier(clientX, clientY);
+    };
 
-    // 3. Mouse Up (Release click)
-    window.addEventListener("mouseup", () => {
+    modalImage.addEventListener("mousemove", moveZoom);
+    modalImage.addEventListener("touchmove", moveZoom, { passive: false });
+
+    // 3. End Zoom (Mouse Up, Touch End, Touch Cancel)
+    const endZoom = () => {
         isZooming = false;
         magnifier.style.display = "none";
-    });
+    };
+
+    window.addEventListener("mouseup", endZoom);
+    window.addEventListener("touchend", endZoom);
+    window.addEventListener("touchcancel", endZoom);
 
     // 4. Mouse Leave (Dragging off the image)
-    modalImage.addEventListener("mouseleave", () => {
-        isZooming = false;
-        magnifier.style.display = "none";
-    });
+    modalImage.addEventListener("mouseleave", endZoom);
 
-    function updateMagnifier(e) {
+    function updateMagnifier(clientX, clientY) {
         // Get the exact rendered size and position of the image on the screen
         const rect = modalImage.getBoundingClientRect();
 
         // Calculate cursor coordinates relative to the top-left of the image
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
 
         // Scale the background image up based on the zoom level
         const bgWidth = rect.width * zoomLevel;

@@ -122,6 +122,72 @@ function initGallery() {
         }
     });
 
+    // --- Magnifying Glass Setup ---
+    const modalWrapper = document.querySelector(".modal-wrapper");
+    const magnifier = document.createElement("div");
+    magnifier.className = "magnifier";
+    modalWrapper.appendChild(magnifier);
+
+    let isZooming = false;
+    const zoomLevel = 2.5; // Adjust this number to make the zoom stronger or weaker
+
+    // 1. Mouse Down (Left Click)
+    modalImage.addEventListener("mousedown", (e) => {
+        e.preventDefault(); // Prevents the browser from trying to "drag" the image file
+        if (e.button !== 0) return; // Only trigger if it's the left mouse button
+
+        isZooming = true;
+        magnifier.style.display = "block";
+        magnifier.style.backgroundImage = `url('${modalImage.src}')`;
+        updateMagnifier(e);
+    });
+
+    // 2. Mouse Move (Dragging the glass)
+    modalImage.addEventListener("mousemove", (e) => {
+        if (!isZooming) return;
+        updateMagnifier(e);
+    });
+
+    // 3. Mouse Up (Release click)
+    window.addEventListener("mouseup", () => {
+        isZooming = false;
+        magnifier.style.display = "none";
+    });
+
+    // 4. Mouse Leave (Dragging off the image)
+    modalImage.addEventListener("mouseleave", () => {
+        isZooming = false;
+        magnifier.style.display = "none";
+    });
+
+    function updateMagnifier(e) {
+        // Get the exact rendered size and position of the image on the screen
+        const rect = modalImage.getBoundingClientRect();
+
+        // Calculate cursor coordinates relative to the top-left of the image
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Scale the background image up based on the zoom level
+        const bgWidth = rect.width * zoomLevel;
+        const bgHeight = rect.height * zoomLevel;
+        magnifier.style.backgroundSize = `${bgWidth}px ${bgHeight}px`;
+
+        // Calculate the center point of the magnifier circle
+        const magHalfWidth = magnifier.offsetWidth / 2;
+        const magHalfHeight = magnifier.offsetHeight / 2;
+
+        // Shift the background position so the exact point clicked is in the dead-center of the circle
+        const bgPosX = (x * zoomLevel) - magHalfWidth;
+        const bgPosY = (y * zoomLevel) - magHalfHeight;
+        magnifier.style.backgroundPosition = `-${bgPosX}px -${bgPosY}px`;
+
+        // Move the physical magnifier glass element to follow the cursor
+        magnifier.style.left = `${x - magHalfWidth}px`;
+        magnifier.style.top = `${y - magHalfHeight}px`;
+    }
+    // --- End Magnifying Glass Setup ---
+
     document.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 

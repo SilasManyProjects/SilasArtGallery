@@ -250,12 +250,44 @@ function initWeather() {
             }
         } catch (e) {
             console.error(`Weather failed for ${suffix}:`, e);
+            const descEl = document.getElementById(`desc-${suffix}`);
+            if (descEl) descEl.textContent = "Error loading";
         }
     }
 
-    // Coordinates for Jacksonville and Warrenton
-    fetchWeather(30.33, -81.66, "jax");
-    fetchWeather(38.81, -91.14, "warren");
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                
+                try {
+                    // Try to get the city name from the coordinates
+                    const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
+                    const geoRes = await fetch(geoUrl);
+                    if (geoRes.ok) {
+                        const geoData = await geoRes.json();
+                        const cityName = geoData.city || geoData.locality || "Your Location";
+                        const nameEl = document.getElementById('name-local');
+                        if (nameEl) nameEl.textContent = cityName;
+                    }
+                } catch (e) {
+                    console.log("Reverse geocode failed:", e);
+                }
+
+                // Fetch weather for the user's location
+                fetchWeather(lat, lon, "local");
+            },
+            (error) => {
+                console.warn("Geolocation Error:", error.message);
+                const descEl = document.getElementById('desc-local');
+                if (descEl) descEl.textContent = "Location access denied";
+            }
+        );
+    } else {
+        const descEl = document.getElementById('desc-local');
+        if (descEl) descEl.textContent = "Geolocation not supported";
+    }
 }
 
 /* =========================================

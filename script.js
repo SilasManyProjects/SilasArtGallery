@@ -62,6 +62,7 @@ function initMusic() {
 function initGallery() {
     const modal = document.getElementById("imageModal");
     const modalImage = document.getElementById("modalImage");
+    const modalGlow = document.getElementById("modalGlow");
     const modalDescription = document.getElementById("modalDescription");
     const closeBtn = document.querySelector(".close");
     const prevBtn = document.querySelector(".prev");
@@ -89,6 +90,7 @@ function initGallery() {
         const img = galleryImagesArray[currentIndex];
         if (modalImage && modalDescription) {
             modalImage.src = img.src;
+            if (modalGlow) modalGlow.src = img.src;
             modalDescription.innerHTML = img.title || "Image";
 
             // Reset animation

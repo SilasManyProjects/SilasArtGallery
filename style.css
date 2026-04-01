@@ -238,15 +238,23 @@ p {
 }
 
 #modalDescription {
-    margin-top: 20px;
+    margin-top: 30px;
     font-family: 'Playfair Display', serif;
-    font-style: italic;
-    color: #fff;
-    font-size: 24px;
-    background: 0 0;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.11);
-    padding: 10px;
+    color: #fcebd5;
+    /* Pale gold text */
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    background: linear-gradient(145deg, #2a2a2a 0%, #0d0d0d 100%);
+    border: 4px double #d4af37;
+    /* Gilded edge */
+    border-radius: 2px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(212, 175, 55, 0.15);
+    padding: 15px 45px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    position: relative;
+    z-index: 10;
 }
 
 .close {

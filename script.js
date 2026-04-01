@@ -9,6 +9,12 @@ function initMusic() {
     let currentTrackIndex = 0;
     const audio = new Audio(playlist[0]);
     audio.volume = 0.5;
+
+    // Ambient sound player
+    window.ambientAudio = new Audio();
+    window.ambientAudio.loop = true;
+    window.ambientAudio.volume = 0.15;
+
     let isPlaying = false;
 
     function updateMusicUI() {
@@ -34,9 +40,11 @@ function initMusic() {
     musicBtn.addEventListener('click', () => {
         if (isPlaying) {
             audio.pause();
+            if (window.ambientAudio.src) window.ambientAudio.pause();
             isPlaying = false;
         } else {
             audio.play().then(() => {
+                if (window.ambientAudio.src) window.ambientAudio.play().catch(() => { });
                 isPlaying = true;
             }).catch(() => {
                 isPlaying = false;
@@ -45,9 +53,14 @@ function initMusic() {
         updateMusicUI();
     });
 
+    // Globally track state for weather sequence delay
+    audio.addEventListener('play', () => window.isMusicPlaying = true);
+    audio.addEventListener('pause', () => window.isMusicPlaying = false);
+
     // Attempt Autoplay on first user interaction anywhere
     const tryAutoplay = () => {
         audio.play().then(() => {
+            if (window.ambientAudio.src) window.ambientAudio.play().catch(() => { });
             isPlaying = true;
             updateMusicUI();
             document.removeEventListener('click', tryAutoplay);
@@ -141,7 +154,7 @@ function initGallery() {
         isZooming = true;
         magnifier.style.display = "block";
         magnifier.style.backgroundImage = `url('${modalImage.src}')`;
-        
+
         const isTouch = e.type.includes('touch');
         const clientX = isTouch ? e.touches[0].clientX : e.clientX;
         const clientY = isTouch ? e.touches[0].clientY : e.clientY;
@@ -155,7 +168,7 @@ function initGallery() {
     const moveZoom = (e) => {
         if (!isZooming) return;
         e.preventDefault(); // Prevents scrolling while zooming
-        
+
         const isTouch = e.type.includes('touch');
         const clientX = isTouch ? e.touches[0].clientX : e.clientX;
         const clientY = isTouch ? e.touches[0].clientY : e.clientY;
@@ -231,7 +244,7 @@ function initWeather() {
 
     async function fetchWeather(lat, lon, suffix) {
         // Updated to Open-Meteo's modern 'current' parameter syntax
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&temperature_unit=fahrenheit`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,is_day&temperature_unit=fahrenheit`;
 
         try {
             const response = await fetch(url);
@@ -241,6 +254,22 @@ function initWeather() {
             if (data.current) {
                 const temp = Math.round(data.current.temperature_2m);
                 const code = data.current.weather_code;
+                const isDay = data.current.is_day; // 1 if it is currently day, 0 if night
+
+                // Assign ambient audio track based on weather code
+                let ambientSrc = "";
+                if ([0, 1].includes(code)) {
+                    ambientSrc = isDay ? "cleardaybirds.wav" : "clearcrickets.wav";
+                }
+                else if ([2, 3, 45, 48, 71, 73, 75].includes(code)) ambientSrc = "wind.wav";
+                else if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) ambientSrc = "rain.wav";
+                else if ([95, 96, 99].includes(code)) ambientSrc = "rainandthunder.wav";
+
+                if (ambientSrc && window.ambientAudio) {
+                    window.ambientAudio.src = ambientSrc;
+                    // If weather loads after music starts, play it immediately
+                    if (window.isMusicPlaying) window.ambientAudio.play().catch(() => { });
+                }
 
                 const tempEl = document.getElementById(`temp-${suffix}`);
                 const descEl = document.getElementById(`desc-${suffix}`);
@@ -262,7 +291,7 @@ function initWeather() {
             async (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-                
+
                 try {
                     // Try to get the city name from the coordinates
                     const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;

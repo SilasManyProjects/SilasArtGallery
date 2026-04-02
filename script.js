@@ -8,12 +8,12 @@ function initMusic() {
     const playlist = ["music.mp3", "music2.mp3"];
     let currentTrackIndex = 0;
     const audio = new Audio(playlist[0]);
-    audio.volume = 0.5;
+    audio.volume = 0.2; // Decreased from 0.5 to let ambiance shine through
 
     // Ambient sound player
     window.ambientAudio = new Audio();
     window.ambientAudio.loop = true;
-    window.ambientAudio.volume = 0.15;
+    window.ambientAudio.volume = 0.4; // Increased from 0.15 to blend better with the music
 
     let isPlaying = false;
 
